@@ -1,0 +1,28 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const studentManagement_1 = require("../controller/student/studentManagement");
+const profileMiddleware_1 = require("../middlewares/profileMiddleware");
+const domainController_1 = require("../controller/admin/domain/domainController");
+const studentManifest_1 = require("../controller/student/studentManifest");
+const reviewMangmentController_1 = require("../controller/review/reviewMangmentController");
+const taskManagementController_1 = require("../controller/task/taskManagementController");
+const studentLoginController_1 = require("../controller/student/studentLoginController");
+const studentProfileController_1 = require("../controller/student/studentProfileController");
+const studentRoute = express_1.default.Router();
+studentRoute.post('/login', studentLoginController_1.studentLogin);
+studentRoute.put('/set-password/:id', profileMiddleware_1.studentProfileMiddleware, studentManagement_1.passwordCreation);
+studentRoute.put('/set-profile/:id', profileMiddleware_1.studentProfileMiddleware, studentProfileController_1.studentProfileController);
+studentRoute.put('/edit-profile', authMiddleware_1.StudentAuthToken, studentProfileController_1.studentProfileController);
+studentRoute.put('/update-password', authMiddleware_1.StudentAuthToken, studentLoginController_1.studentChangePassword);
+studentRoute.get('/home', authMiddleware_1.StudentAuthToken, studentProfileController_1.getStudentHomeController);
+studentRoute.get('/profile', authMiddleware_1.StudentAuthToken, studentProfileController_1.getStudentProfileController);
+studentRoute.get('/get-domaim-info/:id', profileMiddleware_1.studentProfileMiddleware, domainController_1.getAllDomainController);
+studentRoute.get('/weekly-review', authMiddleware_1.StudentAuthToken, reviewMangmentController_1.findOneReviewController);
+studentRoute.get('/weekly-task', authMiddleware_1.StudentAuthToken, taskManagementController_1.findTaskByDomainController);
+studentRoute.get('/manifest', authMiddleware_1.StudentAuthToken, studentManifest_1.findStudentManifestController);
+exports.default = studentRoute;
